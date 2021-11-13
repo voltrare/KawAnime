@@ -31,7 +31,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: sudo apt update
-    - run: sudo apt install cmake ninja-build libboost-all-dev libmpv1 libavformat-dev
+    - run: sudo apt install build-essential cmake ninja-build libboost-all-dev libmpv1 libavformat-dev libtorrent-rasterbar10 libtorrent-rasterbar-dev libtorrent-rasterbar ninja-build
     - run: npm install
     - run: npm run postinstall
     - run: npm run dist:linux
