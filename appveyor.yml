@@ -56,4 +56,4 @@ test_script:
   - npm run test
 
 deploy_script:
-  - IF [%APPVEYOR_REPO_BRANCH%]==[master] npm run publish:win && npm run publish:portable
+  - IF [%APPVEYOR_REPO_BRANCH%]==[dev, master] npm run publish:win && npm run publish:portable
