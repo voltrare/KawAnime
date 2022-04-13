@@ -1,0 +1,61 @@
+name: Linux Build
+
+on:
+  push:
+    branches: [ dev, master ]
+  pull_request:
+    branches: [ dev ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: false
+      USE_HARD_LINKS: false
+      CC: gcc
+      CXX: g++
+        
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: sudo apt update
+    - run: sudo apt-get install build-essential cmake ninja-build libboost-all-dev libmpv1 libavformat-dev libtorrent-rasterbar-dev ninja-build
+    - run: npm install
+    - run: npm run postinstall
+    - run: npm run dist:linux
+    
+#     - name: gabrielbb/xvfb-action
+#       uses: GabrielBB/xvfb-action@v1.5
+#       with:
+#        run: |
+#          npm run lint
+#          npm run pack
+#          npm run test
+        
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: |
+          !dist/*.snap
+          dist/*.AppImage
+          !dist/linux-unpacked
+          !dist/linux
+          !dist/bundled
+    - name: Download test Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: mochawesome-report # optional
+        path: mochawesome-report/ # optional
